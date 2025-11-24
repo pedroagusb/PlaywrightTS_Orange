@@ -1,20 +1,13 @@
 import { EmployeeData } from "../types/employee.types";
 import { BasePage } from "./base/BasePage";
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { NavigationState } from "../types/dashboard.types"
 import { DashboardPage } from "./DashboardPage";
 
 export class AdminPage extends DashboardPage{
 
-    private readonly addButton = 'button.oxd-main-menu-button';
-    private readonly employeeRegisterScreen = 'form.oxd-form';
-    private readonly userRoleDropdown = '???';    // TODO: Inspeccionar
-    private readonly employeeNameInput = '???';   // TODO: Inspeccionar
-    private readonly statusDropdown = '???';      // TODO: Inspeccionar
-    private readonly usernameInput = '???';       // TODO: Inspeccionar
-    private readonly passwordInput = '???';       // TODO: Inspeccionar
-    private readonly confirmPasswordInput = '???';// TODO: Inspeccionar
-    private readonly saveButton = '???';          // TODO: Inspeccionar
+    private readonly addButton = 'button.oxd-button:has-text("Add")';
+    private readonly saveButton = 'button[type="submit"]';
 
     constructor(page: Page){
         super(page);
@@ -26,20 +19,33 @@ export class AdminPage extends DashboardPage{
 
     async addEmployee(employeeData: EmployeeData): Promise<void> {
 
+        // clickElement uses locator(), so it's not needed to validate if the registration screen appears
         await this.clickElement(this.addButton);
-        await this.waitForElementVisible(this.employeeRegisterScreen, 5000);
 
-        await this.selectDropdownOption(this.userRoleDropdown, employeeData.role);
+        await this.selectDropdownOption('User Role', employeeData.role);
+        await this.selectDropdownOption('Status', employeeData.status);
 
-        await this.fillText(this.employeeNameInput, employeeData.employeeName);
+        await this.fillAutocomplete('Employee Name','James', 'James Butler');
 
-        await this.selectDropdownOption(this.statusDropdown, employeeData.status);
-        
-        await this.fillText(this.usernameInput, employeeData.username);
-        await this.fillText(this.passwordInput, employeeData.password);
-        await this.fillText(this.confirmPasswordInput, employeeData.password);
+        await this.fillFormText('Username', employeeData.username);
+        await this.fillFormText('Password', employeeData.password);
+        await this.fillFormText('Confirm Password', employeeData.password);
 
         await this.clickElement(this.saveButton);
     }
 
+    async searchUser(employeeData: EmployeeData): Promise<Locator> {
+        await this.waitForLoadingSpinner();
+        
+        await this.fillFormText('Username', employeeData.username);
+        await this.clickElement('button[type="submit"]');
+
+        await this.waitForLoadingSpinner();
+
+        const table = this.page.getByRole('table');
+        const rows = this.page.getByRole('row');
+        const targetRow = rows.filter({ hasText: `${employeeData.username}`})
+
+        return targetRow
+    }
 }

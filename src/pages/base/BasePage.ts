@@ -30,16 +30,38 @@ export class BasePage {
     }
 
     async clickElement(selector: string): Promise<void> {
-        await this.page.click(selector, { timeout: 5000 });
+        const element = this.getElement(selector);
+        await element.click({timeout: 5000})
     }
 
-    async fillText(selector:string, text: string): Promise<void> {
-        const element = await this.waitForElement(selector);
+    async fillTextBySelector(selector:string, text: string): Promise<void> {
+        const element = this.getElement(selector);
         await element.fill(text);
     }
 
+    async fillAutocomplete(labelText: string, textToFill: string, optionText: string): Promise<void> {
+        try{        
+            const element = this.getInputByLabel(labelText);
+            await element.fill(textToFill);
+
+            await this.page.locator(`[role='option']:has-text("${optionText}")`)
+                    .click();
+        } catch(error){
+            throw new Error(`Failed to select "${optionText}" from "${labelText}" dropdown. ${error}`);      
+        }
+    }
+
+    async fillFormText(labelText:string, textToFill: string): Promise<void> {
+        try {
+            const element = this.getInputByLabel(labelText);
+            await element.fill(textToFill);
+        } catch (error) {
+            throw new Error(`Failed to fill the text "${textToFill}" in "${labelText}" dropdown. ${error}`);      
+        }
+    }
+
     async getElementText(selector: string): Promise<string> {
-        const element = await this.waitForElement(selector);
+        const element = this.getElement(selector);
         return element.innerText();
     }
 
@@ -71,10 +93,6 @@ export class BasePage {
                 timeout: 5000 
             });
 
-            await this.page.locator('.oxd-select-dropdown')
-                .locator(`text=${optionText}`)
-                .click();
-
             await this.page.locator(`[role='option']:has-text("${optionText}")`)
                 .click();
 
@@ -83,9 +101,28 @@ export class BasePage {
         }     
     }
 
+    protected async waitForLoadingSpinner(): Promise<void> {
+        const spinner = this.page.locator('.oxd-loading-spinner');
+
+        // First wait for spinner to appear. If it doesn't appear its okay
+        try{
+            await spinner.waitFor({state: 'visible', timeout: 1000})
+        }catch{
+
+        }
+        // Wait for spinner to hide
+        await spinner.waitFor({state: 'hidden', timeout: 10000});
+    }
+
     private getDropDownByLabel(labelText: string) {
         return this.page.locator('.oxd-input-group', {
-            has: this.page.locator(`label:has-text("${labelText}")`)
+            has: this.page.locator(`label:text-is("${labelText}")`)
         }).locator('.oxd-select-text');
+    }
+
+    private getInputByLabel(labelText: string) {
+        return this.page.locator('.oxd-input-group', {
+            has: this.page.locator(`label:text-is("${labelText}")`)
+        }).locator('input')
     }
 }
