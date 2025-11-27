@@ -104,7 +104,7 @@ export class BasePage {
     protected async waitForLoadingSpinner(): Promise<void> {
         const spinner = this.page.locator('.oxd-loading-spinner');
 
-        // First wait for spinner to appear. If it doesn't appear its okay
+        // First wait for spinner to appear. If it doesn't appear its okay.
         try{
             await spinner.waitFor({state: 'visible', timeout: 1000})
         }catch{
