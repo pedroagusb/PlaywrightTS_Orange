@@ -1,15 +1,15 @@
 import { randomUUID } from 'crypto';
 import { test, expect } from '../src/fixtures/allFixtures.fixture';
-import { ActiveEmployeeData, NewEmployeeData } from '../src/types/employee.types';
+import { EmployeeData } from '../src/types/employee.types';
 
 test.describe('Administration Operations', () => {
     test('Should create new user and verify in table', async ({ adminPage }) => {
         const currentState = await adminPage.getCurrentNavigationState();
         expect(currentState.currentMenu).toBe('Admin');
 
-        const newEmployee: NewEmployeeData = {
+        const newEmployee: EmployeeData = {
             role: 'Admin',
-            employeeName: 'Automation Test Pedro',
+            employeeName: 'James',
             status: 'Enabled',
             username: `autoTestPedro_${Date.now()}`,
             password: 'automation.123'
@@ -19,7 +19,7 @@ test.describe('Administration Operations', () => {
 
         const page = adminPage.getPage();
         await expect(page.locator('.oxd-toast--success'))
-        .toContainText('Successfully Saved');
+            .toContainText('Successfully Saved');
 
         const userRow = await adminPage.searchUserByUsername(newEmployee.username);
 
@@ -33,7 +33,7 @@ test.describe('Administration Operations', () => {
         const currentState = await adminPage.getCurrentNavigationState();
         expect(currentState.currentMenu).toBe('Admin');
 
-        const existingEmployee: ActiveEmployeeData = {
+        const existingEmployee: EmployeeData = {
             role: 'Admin',
             employeeName: '',
             status: 'Enabled',
@@ -52,7 +52,7 @@ test.describe('Administration Operations', () => {
         const currentState = await adminPage.getCurrentNavigationState();
         expect(currentState.currentMenu).toBe('Admin');
 
-        const existingEmployee: ActiveEmployeeData = {
+        const existingEmployee: EmployeeData = {
             role: 'ESS',
             employeeName: '',
             status: 'Disabled',
@@ -73,7 +73,7 @@ test.describe('Administration Operations', () => {
         const currentState = await adminPage.getCurrentNavigationState();
         expect(currentState.currentMenu).toBe('Admin');
 
-        const editEmployee: ActiveEmployeeData = {
+        const editEmployee: EmployeeData = {
             role: 'Admin',
             employeeName: 'James Butler',
             status: 'Enabled',

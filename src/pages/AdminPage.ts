@@ -1,4 +1,4 @@
-import { ActiveEmployeeData, NewEmployeeData } from "../types/employee.types";
+import { EmployeeData } from "../types/employee.types";
 import { BasePage } from "./base/BasePage";
 import { Locator, Page } from "@playwright/test";
 import { NavigationState } from "../types/dashboard.types"
@@ -23,7 +23,7 @@ export class AdminPage extends DashboardPage{
         };
     }
 
-    async addEmployee(employeeData: NewEmployeeData): Promise<void> {
+    async addEmployee(employeeData: EmployeeData): Promise<void> {
 
         // clickElement uses locator(), so it's not needed to validate if the registration screen appears
         await this.clickElement(this.addButton);
@@ -31,12 +31,15 @@ export class AdminPage extends DashboardPage{
         await this.selectDropdownOption('User Role', employeeData.role);
         await this.selectDropdownOption('Status', employeeData.status);
 
-        await this.fillAutocomplete('Employee Name','James', 'James Butler');
+        await this.fillAutocomplete('Employee Name',employeeData.employeeName, employeeData.employeeName);
 
         await this.fillFormText('Username', employeeData.username);
-        await this.fillFormText('Password', employeeData.password);
-        await this.fillFormText('Confirm Password', employeeData.password);
 
+        if(employeeData.password){
+            await this.fillFormText('Password', employeeData.password);
+            await this.fillFormText('Confirm Password', employeeData.password);
+        }
+        
         await this.clickElement(this.saveButton);
     }
 
@@ -77,7 +80,7 @@ export class AdminPage extends DashboardPage{
         await this.clickElement(this.confirmDeleteButton);
     }
 
-    async editUser(userRow: Locator, existingEmployee: Partial<ActiveEmployeeData>): Promise<void> {
+    async editUser(userRow: Locator, existingEmployee: Partial<EmployeeData>): Promise<void> {
         const editButton = userRow.locator(this.editButton);
         await editButton.click();
 
