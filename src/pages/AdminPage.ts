@@ -77,15 +77,26 @@ export class AdminPage extends DashboardPage{
         await this.clickElement(this.confirmDeleteButton);
     }
 
-    async editUser(userRow: Locator, existingEmployee: ActiveEmployeeData): Promise<void> {
+    async editUser(userRow: Locator, existingEmployee: Partial<ActiveEmployeeData>): Promise<void> {
         const editButton = userRow.locator(this.editButton);
         await editButton.click();
 
         await this.waitForLoadingSpinner();
 
-        const employeeName = existingEmployee.employeeName;
+        if(existingEmployee.username){
+            await this.fillFormText('Username', existingEmployee.username);
+        }
 
-        await this.fillAutocomplete('Employee Name', employeeName, employeeName);
+        if(existingEmployee.status){
+            await this.selectDropdownOption('Status', existingEmployee.status);
+        }
+
+        if(existingEmployee.role){
+            await this.selectDropdownOption('User Role', existingEmployee.role);
+        }     
+
         await this.clickElement(this.saveEditButton);
+        
+        await this.waitForLoadingSpinner();
     }
 }

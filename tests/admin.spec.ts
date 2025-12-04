@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../src/fixtures/allFixtures.fixture';
 import { ActiveEmployeeData, NewEmployeeData } from '../src/types/employee.types';
 
@@ -68,24 +69,30 @@ test.describe('Administration Operations', () => {
         .toContainText('Successfully Deleted');
     })
 
-    test('Should be able to edit an existing user', async({adminPage}) => {
-         const currentState = await adminPage.getCurrentNavigationState();
+    test('Should be able to edit the Username from an existing user', async({adminPage}) => {
+        const currentState = await adminPage.getCurrentNavigationState();
         expect(currentState.currentMenu).toBe('Admin');
 
-        const existingEmployee: ActiveEmployeeData = {
+        const editEmployee: ActiveEmployeeData = {
             role: 'Admin',
             employeeName: 'James Butler',
             status: 'Enabled',
-            username: 'Admin'
+            username: `AutoTest_${Date.now()}`
         };
 
-        const userRow = await adminPage.searchUserByUsername(existingEmployee.username);
+        const userRow = await adminPage.searchUserByOption('Status',editEmployee.status);
+
         await expect(userRow).toBeVisible();
 
-        await adminPage.editUser(userRow, existingEmployee);
+        await adminPage.editUser(userRow, {username: editEmployee.username});
 
         const page = adminPage.getPage();
         await expect(page.locator('.oxd-toast--success'))
-        .toContainText('Successfully Updated');
+            .toContainText('Successfully Updated');
+
+        const searchUserRow = await adminPage.searchUserByUsername(editEmployee.username);
+        await expect(searchUserRow).toBeVisible();
+        await expect(searchUserRow).toContainText(editEmployee.username);
+        await expect(searchUserRow).toContainText(editEmployee.status);    
     })
 })
