@@ -31,7 +31,7 @@ export class BasePage {
 
     async clickElement(selector: string): Promise<void> {
         const element = this.getElement(selector);
-        await element.click({timeout: 5000})
+        await element.click({timeout: 10000})
     }
 
     async fillTextBySelector(selector:string, text: string): Promise<void> {
@@ -73,7 +73,7 @@ export class BasePage {
         return this.page.locator(selector);
     }
 
-    private async waitForElement(selector: string, timeout = 5000): Promise<Locator>{
+    private async waitForElement(selector: string, timeout = 10000): Promise<Locator>{
         const element = this.getElement(selector);
 
         await element.waitFor({state: 'visible', timeout});

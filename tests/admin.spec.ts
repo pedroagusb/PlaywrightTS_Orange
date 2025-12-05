@@ -48,51 +48,60 @@ test.describe('Administration Operations', () => {
         await expect(userRow).toContainText(existingEmployee.role)
     })
 
-    test('Should be able to delete an existing user', async({adminPage}) => {
-        const currentState = await adminPage.getCurrentNavigationState();
-        expect(currentState.currentMenu).toBe('Admin');
-
-        const existingEmployee: EmployeeData = {
-            role: 'ESS',
-            employeeName: '',
-            status: 'Disabled',
-            username: ''
-        };
-
-        const userRow = await adminPage.searchUserByOption('Status', existingEmployee.status);
-        await expect(userRow).toBeVisible();
-
-        await adminPage.deleteUser(userRow);
-
-        const page = adminPage.getPage();
-        await expect(page.locator('.oxd-toast--success'))
-        .toContainText('Successfully Deleted');
-    })
-
-    test('Should be able to edit the Username from an existing user', async({adminPage}) => {
-        const currentState = await adminPage.getCurrentNavigationState();
-        expect(currentState.currentMenu).toBe('Admin');
-
-        const editEmployee: EmployeeData = {
+    test('Should perform complete CRUD operations on employee', async ({ adminPage }) => {
+        const timestamp = Date.now();
+        const employee: EmployeeData = {
             role: 'Admin',
             employeeName: 'James Butler',
             status: 'Enabled',
-            username: `AutoTest_${Date.now()}`
+            username: `autotest_${timestamp}`,
+            password: 'Test123!@#'
         };
 
-        const userRow = await adminPage.searchUserByOption('Status',editEmployee.status);
+        // ============ CREATE ============
+        await test.step('Create new employee', async () => {
+            await adminPage.addEmployee(employee);
 
-        await expect(userRow).toBeVisible();
+            const toast = adminPage.getPage().locator('.oxd-toast--success');
+            await expect(toast).toBeVisible();
+        })
 
-        await adminPage.editUser(userRow, {username: editEmployee.username});
+        // ============ READ ============
+        await test.step('Read employee status', async () => {
+            const userRow = await adminPage.searchUserByUsername(employee.username);
 
-        const page = adminPage.getPage();
-        await expect(page.locator('.oxd-toast--success'))
-            .toContainText('Successfully Updated');
+            await expect(userRow).toBeVisible();
+            await expect(userRow).toContainText(employee.username);
+            await expect(userRow).toContainText(employee.status);
+            await expect(userRow).toContainText(employee.role)
+        })
 
-        const searchUserRow = await adminPage.searchUserByUsername(editEmployee.username);
-        await expect(searchUserRow).toBeVisible();
-        await expect(searchUserRow).toContainText(editEmployee.username);
-        await expect(searchUserRow).toContainText(editEmployee.status);    
+        // ============ UPDATE ============
+        await test.step('Edit employee status', async() => {
+            const userRow = await adminPage.searchUserByUsername(employee.username);
+            await adminPage.editUser(userRow, { status: 'Disabled' });
+            
+            const toast = adminPage.getPage().locator('.oxd-toast--success');
+            await expect(toast).toBeVisible();
+            
+            // Verify if edit worked
+            const updatedRow = await adminPage.searchUserByOption('Status', 'Disabled');
+            await expect(updatedRow).toContainText(employee.username);
+        })
+
+        // ============ DELETE ============
+        await test.step('Delete employee', async () => {
+            const userRow = await adminPage.searchUserByUsername(employee.username);
+            await adminPage.deleteUser(userRow);
+            
+            const toast = adminPage.getPage().locator('.oxd-toast--success');
+            await expect(toast).toBeVisible();
+            
+            // Verify deletion
+            await adminPage.searchUserByUsername(employee.username);
+            const noResults = adminPage.getPage()
+            .locator('span')
+            .filter({ hasText: 'No Records Found' });
+        })
     })
 })

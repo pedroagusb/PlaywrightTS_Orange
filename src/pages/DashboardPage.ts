@@ -26,6 +26,8 @@ export class DashboardPage extends BasePage {
             }
             else {
                 await this.waitForElementVisible(`${this.breadcrumbMenu}:has-text("${menu}")`);
+
+                await this.page.waitForLoadState('networkidle');
             }
 
             this.navigationState.currentMenu = menu;

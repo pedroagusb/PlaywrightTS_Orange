@@ -59,12 +59,19 @@ export class AdminPage extends DashboardPage{
     }
 
     async searchUserByOption(value: 'Status' | 'User Role', option: string): Promise<Locator> {
-        await this.waitForLoadingSpinner();
+        //await this.waitForLoadingSpinner();
 
         await this.selectDropdownOption(`${value}`, option);
         await this.clickElement('button[type="submit"]');
 
         await this.waitForLoadingSpinner();
+
+        await this.page.waitForLoadState('networkidle');
+
+        await this.page.getByRole('row').filter({ hasText: value }).first().waitFor({ 
+            state: 'visible', 
+            timeout: 10000 
+        }); 
 
         const table = this.page.getByRole('table');
         const rows = table.getByRole('row');
@@ -80,7 +87,7 @@ export class AdminPage extends DashboardPage{
         await this.clickElement(this.confirmDeleteButton);
     }
 
-    async editUser(userRow: Locator, existingEmployee: Partial<EmployeeData>): Promise<void> {
+    async editUser(userRow: Locator, existingEmployee: Partial<EmployeeData>): Promise<Locator> {
         const editButton = userRow.locator(this.editButton);
         await editButton.click();
 
@@ -100,6 +107,11 @@ export class AdminPage extends DashboardPage{
 
         await this.clickElement(this.saveEditButton);
         
-        await this.waitForLoadingSpinner();
+        //await this.waitForLoadingSpinner();
+
+        const toast = this.page.locator('.oxd-toast--success');
+        await toast.waitFor({ state: 'visible', timeout: 10000 });
+
+        return toast;
     }
 }
