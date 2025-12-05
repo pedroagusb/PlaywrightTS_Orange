@@ -85,8 +85,10 @@ test.describe('Administration Operations', () => {
             await expect(toast).toBeVisible();
             
             // Verify if edit worked
-            const updatedRow = await adminPage.searchUserByOption('Status', 'Disabled');
+            //const updatedRow = await adminPage.searchUserByOption('Status', 'Disabled');
+            const updatedRow = await adminPage.searchUserByUsername(employee.username)
             await expect(updatedRow).toContainText(employee.username);
+            await expect(updatedRow).toContainText('Disabled');
         })
 
         // ============ DELETE ============

@@ -19,18 +19,13 @@ export const employeeTestData: EmployeeTestData[] = [
     },
     {
         role: 'ESS',
-        employeeName: 'Auto',
-        status: 'Enabled'
-    },
-    {
-        role: 'ESS',
         employeeName: 'James Butler',
         status: 'Disabled'
     },
     {
         role: 'Admin',
-        employeeName: 'Auto',
-        status: 'Enabled'
+        employeeName: 'James Butler',
+        status: 'Disabled'
     },
 
 ]
