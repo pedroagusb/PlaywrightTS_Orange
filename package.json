@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:unit": "jest",
+    "playwright": "playwright test"
+  },
   "keywords": [],
-  "author": "",
+  "author": "Pedro Agustin Becerra",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "@types/node": "^24.10.13"
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.13",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6"
   }
 }
