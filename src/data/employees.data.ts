@@ -1,4 +1,5 @@
 import { EmployeeData } from '../types/employee.types';
+import { generateUsername } from '../utils/dataGenerators';
 
 export interface EmployeeTestData {
     role: 'Admin' | 'ESS',
@@ -33,7 +34,7 @@ export const employeeTestData: EmployeeTestData[] = [
 export function generateEmployee(baseData: EmployeeTestData): EmployeeData {
     return {
         ... baseData,
-        username: `James Butler_${Date.now()}`,
+        username: generateUsername(baseData.employeeName),
         password: 'automation.123'
     }
 }

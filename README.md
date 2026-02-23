@@ -2,7 +2,6 @@
 
 [![Playwright Tests](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml/badge.svg)](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml)
 
-
 Modern E2E automation framework for OrangeHRM using Playwright and TypeScript with professional testing patterns.
 
 ## 🎯 Project Overview
@@ -27,13 +26,14 @@ This framework demonstrates enterprise-level test automation implementation feat
 ### Implemented Functionality
 
 - ✅ **Admin Module - Complete CRUD Operations**
+
   - Create users with role-based permissions
   - Search users by username, status, and role
   - Update user information with flexible partial updates
   - Delete users with confirmation handling
   - Data-driven test generation
-
 - ✅ **Dashboard Navigation**
+
   - Multi-level menu navigation
   - State tracking and verification
   - Loading spinner handling
@@ -52,6 +52,10 @@ This framework demonstrates enterprise-level test automation implementation feat
 ```text
 playwright_dashboard/
 ├── src/
+│   ├── __tests__/
+│   │   └── dataGenerators.test.ts  # Jest unit tests
+│   ├── utils/
+│   │   └── dataGenerators.ts       # Pure helper functions
 │   ├── config/
 │   │   ├── credentials.ts       # Authentication configuration
 │   │   └── environments.ts      # Environment settings
@@ -119,6 +123,22 @@ npx playwright test --ui
 # Generate HTML report
 npx playwright show-report
 ```
+
+### Running Unit Tests
+
+```bash
+# Run unit tests only
+npm run test:unit
+
+# Run unit tests with coverage report
+npm run test:coverage
+```
+
+******Unit tests cover pure utility functions****** (no browser required):
+**-**`generateUsername()` — username generation and format validation
+**-**`generateEmployeeData()` — test data factory with override support
+
+******Coverage threshold:****** 80% minimum (statements, branches, functions, lines)
 
 ### Running Data-Driven Tests
 

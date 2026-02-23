@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:unit": "jest",
+    "test:coverage": "jest --coverage",
     "playwright": "playwright test"
   },
   "keywords": [],
