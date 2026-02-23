@@ -1,8 +1,6 @@
 # PlaywrightTS_Orange
 
-[![Playwright Tests](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml/badge.svg)](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml)
-
-[![Unit Tests](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml/badge.svg)](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml)
+[![Playwright Tests](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml/badge.svg)](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml) 	[![Unit Tests](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml/badge.svg)](https://github.com/pedroagusb/PlaywrightTS_Orange/actions/workflows/playwright.yml)
 
 Modern E2E automation framework for OrangeHRM using Playwright and TypeScript with professional testing patterns.
 
